@@ -27,75 +27,42 @@ class Master(Script):
     
     self.start(env)
     self.mount(env)
-    # Execute(format("yum install wget libselinux-devel nfs-utils-lib-devel -y"))
-    # Execute(format("yum groupinstall development tools -y"))
-    # Execute(format("wget -P /tmp http://scteam.ksc.re.kr/~jhkwak/lustre/client/lustre-client-2.7.0-2.6.32_504.8.1.el6.x86_64.src.rpm"))
-    # Execute(format("ssh root@localhost -T \"nohup rpmbuild --rebuild --define 'lustre_name lustre-client' --define 'configure_args --disable-server --enable-client' --without servers /tmp/lustre-client-2.7.0-2.6.32_504.8.1.el6.x86_64.src.rpm > /tmp/buildhistory\""))
-    # Execute(format("yum localinstall /root/rpmbuild/RPMS/x86_64/lustre-iokit-* -y"))
-    # Execute(format("yum localinstall /root/rpmbuild/RPMS/x86_64/lustre-client-* -y"))
-    # os.makedirs("/mnt/lustre/hadoop")
-    #os.system("ssh root@localhost -t \"mkdir -p /mnt/lustre/hadoop\"")
-    #Execute(format("wget http://repos.fedorapeople.org/repos/dchen/apache-maven/epel-apache-maven.repo -O /etc/yum.repos.d/epel-apache-maven.repo"))
-    #Execute(format("sed -i s/\$releasever/6/g /etc/yum.repos.d/epel-apache-maven.repo"))
-    #Execute(format("yum install -y apache-maven git"))
-    #Execute(format("git clone https://github.com/Seagate/lustrefs"))
-    #Execute(format("mvn -f lustrefs/ package"))
-    # Execute(format("/bin/mount -t lustre 192.168.1.196@tcp:/testfs  /mnt/lustre"))
-    # time.sleep(random.randint(0, 15))
 
-    # try:
-    #   os.makedirs("/mnt/lustre/hadoop/user/lustre8m")
-    # except OSError:
-    #   pass
+    ## init process
+    Execute(format("yum install wget libselinux-devel nfs-utils-lib-devel -y"))
+    Execute(format("yum groupinstall development tools -y"))
+    Execute(format("wget -P /tmp http://scteam.ksc.re.kr/~jhkwak/lustre/client/lustre-client-2.7.0-2.6.32_504.8.1.el6.x86_64.src.rpm"))
+    Execute(format("ssh root@localhost -T \"nohup rpmbuild --rebuild --define 'lustre_name lustre-client' --define 'configure_args --disable-server --enable-client' --without servers /tmp/lustre-client-2.7.0-2.6.32_504.8.1.el6.x86_64.src.rpm > /tmp/buildhistory\""))
+    Execute(format("yum localinstall /root/rpmbuild/RPMS/x86_64/lustre-iokit-* -y"))
+    Execute(format("yum localinstall /root/rpmbuild/RPMS/x86_64/lustre-client-* -y"))
+    os.makedirs("/mnt/lustre/hadoop")
+    os.system("ssh root@localhost -t \"mkdir -p /mnt/lustre/hadoop\"")
+    Execute(format("wget http://repos.fedorapeople.org/repos/dchen/apache-maven/epel-apache-maven.repo -O /etc/yum.repos.d/epel-apache-maven.repo"))
+    Execute(format("sed -i s/\$releasever/6/g /etc/yum.repos.d/epel-apache-maven.repo"))
+    Execute(format("yum install -y apache-maven git"))
+    Execute(format("git clone https://github.com/Seagate/lustrefs"))
+    Execute(format("mvn -f lustrefs/ package"))
+    Execute(format("/bin/mount -t lustre 192.168.1.196@tcp:/testfs  /mnt/lustre"))
+    Execute(format("mkdir /lustre"))
+    Execute(format("rm -rf /root/rpmbuild"))
+    Execute(format("yes | cp  lustrefs/target/lustrefs-hadoop-0.9.1.jar /usr/hdp/current/hadoop-hdfs-namenode/lib/"))
+    Execute(format("yes | cp  lustrefs/target/lustrefs-hadoop-0.9.1.jar /usr/hdp/current/hadoop-yarn-nodemanager/lib/"))
+    Execute(format("yes | cp  lustrefs/target/lustrefs-hadoop-0.9.1.jar /usr/hdp/current/hadoop-mapreduce-client/lib/"))
+    Execute(format("yes | cp  lustrefs/target/lustrefs-hadoop-0.9.1.jar /usr/hdp/current/hadoop-mapreduce-historyserver/lib/"))
 
-    time.sleep(random.randint(0, 5))
-    # try:
-    #   os.makedirs("/mnt/lustre/lustre8m")
-    # except OSError:
-    #   pass
-    # Execute(format("mkdir /lustre8m"))
-    # Execute(format("mkdir -p /mnt/lustre/temp_disk/$HOSTNAME"))
-    # Execute(format("mkdir /filedisk2"))
-    # Execute(format("mount -B /mnt/lustre/temp_disk/$HOSTNAME /filedisk2"))
-    # Execute(format("mkdir -p /filedisk2/root/tmp"))
-    # Execute(format("mkdir -p /filedisk2/root/system"))
-    # Execute(format("mkdir -p /filedisk2/root/staging"))
-    # Execute(format("rm -rf /root/rpmbuild"))
-    #Execute(format("yes | cp  lustrefs/target/lustrefs-hadoop-0.9.1.jar /usr/hdp/current/hadoop-hdfs-namenode/lib/"))
-    #Execute(format("yes | cp  lustrefs/target/lustrefs-hadoop-0.9.1.jar /usr/hdp/current/hadoop-yarn-nodemanager/lib/"))
-    #Execute(format("yes | cp  lustrefs/target/lustrefs-hadoop-0.9.1.jar /usr/hdp/current/hadoop-mapreduce-client/lib/"))
-    #Execute(format("yes | cp  lustrefs/target/lustrefs-hadoop-0.9.1.jar /usr/hdp/current/hadoop-mapreduce-historyserver/lib/"))
+    
     print('install is done.')
   def stop(self, env):
     self.sbtls.sp_open('python /var/lib/ambari-agent/cache/common-services/LUSTRE/0.1.0/package/scripts/daemon-lustre.py stop')
 
-    # os.system('python /home/daemon/daemon-example.py stop')
-    # self.unmount(env)
-    # Execute(format("umount /mnt/lustre"))
-    # Execute(format("ssh root@localhost -T \"nohup umount -f /mnt/lustre > /tmp/mounthistory \""))
-    # Execute(format("ssh root@localhost -T \"nohup umount -f /filedisk2 > /tmp/mounthistory \""))
-
   def start(self, env):
-    
     self.sbtls.sp_open('python /var/lib/ambari-agent/cache/common-services/LUSTRE/0.1.0/package/scripts/daemon-lustre.py start')
-    # os.system('python /home/daemon/daemon-example.py start')
-    # self.mount(env)
-    # Execute(format("/bin/mount -t lustre 192.168.1.196@tcp:/testfs  /mnt/lustre"))
-    # Execute(format("ssh root@localhost -T \"nohup umount -f /mnt/lustre > /tmp/mounthistory \""))
-    # Execute(format("ssh root@localhost -T \"nohup umount -f /filedisk2 > /tmp/mounthistory \""))
-    # Execute(format("ssh root@localhost -T \"nohup mount -t lustre 192.168.1.196@tcp:/testfs  /mnt/lustre > /tmp/mounthistory \""))
-    # Execute(format("ssh root@localhost -T \"nohup mount -B /mnt/lustre/temp_disk/$HOSTNAME /filedisk2 > /tmp/mounthistory \""))
 
   def switchtohdfs(self, env):
     self.sbtls.excuteDaemon('tohdfs')
-    print("mount!!")
-
 
   def switchtolustrefs(self, env):
-    print 'init'
     self.sbtls.excuteDaemon('tolustrefs')
-    print 'init-done'
-    print("mount!!")
     
   def getHostsInfo(self):
     global local_hostname

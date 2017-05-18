@@ -20,15 +20,9 @@ class Client(Script):
     time.sleep(random.randint(0,15))
     print 'install'
   def umount(self, env):
-    Execute(format("ssh root@localhost -T \"nohup umount -f /mnt/lustre/hadoop > /tmp/mounthistory \""))
-    Execute(format("ssh root@localhost -T \"nohup umount -f /filedisk2 > /tmp/mounthistory \""))
-
+    pass
   def mount(self, env):
-    #Execute(format("ssh root@localhost -T \"nohup umount -f /mnt/lustre/hadoop > /tmp/mounthistory \""))
-    #Execute(format("ssh root@localhost -T \"nohup umount -f /filedisk2 > /tmp/mounthistory \""))
-    Execute(format("ssh root@localhost -T \"nohup mount -t lustre -o flock 192.168.56.205@tcp:/testfs  /mnt/lustre/hadoop > /tmp/mounthistory \""))
-    Execute(format("ssh root@localhost -T \"nohup mount -B /mnt/lustre/temp_disk/$HOSTNAME /filedisk2 > /tmp/mounthistory \""))
-
+    pass
   def useHDFS(self, env):
     print 'useHDFS';
 
